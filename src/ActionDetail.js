@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+import Heading from './Heading';
 
 const mockAction = {
     title: "EOTSS: Migrate CommVault to the cloud",
@@ -14,22 +15,25 @@ const mockAction = {
 
 const ActionDetail = () => {
   return ( 
-    <Row>
-        <Col className="p-5 text-secondary">
-            <h2>{mockAction.title}</h2>
-            <h4 className="text-primary font-weight-bold">Completion Timeframe: {mockAction.timeframe}</h4>
-            <ul className="list-unstyled">
-                {mockAction.types.map((type) => {
-                    return (
-                        <li className="mt-3">
-                            <h4 className="font-weight-bold">{type.title}</h4>
-                            <p>{type.description}</p>
-                        </li>
-                    );
-                })}
-            </ul>
-        </Col>
-    </Row>
+    <>
+        <Heading closeButton title="SHMCAP Action Tracker Results"/>
+        <Row>
+            <Col className="p-5 text-secondary">
+                <h2>{mockAction.title}</h2>
+                <h4 className="text-primary font-weight-bold">Completion Timeframe: {mockAction.timeframe}</h4>
+                <ul className="list-unstyled">
+                    {mockAction.types.map((type) => {
+                        return (
+                            <li className="mt-3">
+                                <h4 className="font-weight-bold">{type.title}</h4>
+                                <p>{type.description}</p>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </Col>
+        </Row>
+    </>
   );
 }
 

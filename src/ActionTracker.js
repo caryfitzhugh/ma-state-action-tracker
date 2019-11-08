@@ -3,12 +3,14 @@ import ActionList from './ActionList';
 import ActionFilters from './ActionFilters';
 import { Row, Col } from 'react-bootstrap';
 import Utilities from './Utilities';
+import Heading from './Heading';
 
 const ActionTracker = () => {
 
 
   return (
     <>
+        <Heading title="SHMCAP Action Tracker"/>
         <Row className="my-4">
             <Utilities />
         </Row>
