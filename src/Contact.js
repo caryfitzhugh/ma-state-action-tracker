@@ -13,7 +13,7 @@ const Contact = () => {
                     <img className="w-100" alt="flame duck (placeholder)" src="https://i.kym-cdn.com/photos/images/newsfeed/001/141/079/8f3.jpg" />
                 </Col>
                 <Col xs={12} sm={7}>
-                    <form>
+                    <form onSubmit="mailto:placeholder@placeholder.com" method="GET">
                         <Row>
                             <Col xs={12} sm={6}>
                                 <span>First Name</span>
