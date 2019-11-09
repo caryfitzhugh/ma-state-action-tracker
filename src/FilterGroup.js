@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import {Collapse} from 'react-collapse';
 
 const FilterGroup = ({ filter }) => {
   return (
@@ -12,15 +13,17 @@ const FilterGroup = ({ filter }) => {
         </button>
         <FontAwesomeIcon icon={faInfoCircle} size="sm" color="#2B1E76" />
       </div>
-      <ul className="list-unstyled pl-3">
-        {filter.items.map((item) => {
-            return (
-                <li>
-                    <input className="mr-1" type="checkbox" checked={item.checked} />{item.label}
-                </li>
-            );
-        })}
-      </ul>
+      <Collapse isOpened={true}>
+        <ul className="list-unstyled pl-3">
+          {filter.items.map((item) => {
+              return (
+                  <li>
+                      <input className="mr-1" type="checkbox" checked={item.checked} />{item.label}
+                  </li>
+              );
+          })}
+        </ul>
+      </Collapse>
     </>
   );
 }

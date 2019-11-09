@@ -17,8 +17,8 @@ const ActionDetail = () => {
   return ( 
     <>
         <Heading closeButton title="SHMCAP Action Tracker Results"/>
-        <Row>
-            <Col className="p-5 text-secondary">
+        <Row className="mt-3 mt-sm-0">
+            <Col xs={12} className="p-sm-5 text-center text-sm-left text-secondary">
                 <h2>{mockAction.title}</h2>
                 <h4 className="text-primary font-weight-bold">Completion Timeframe: {mockAction.timeframe}</h4>
                 <ul className="list-unstyled">

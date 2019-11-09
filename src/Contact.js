@@ -6,7 +6,7 @@ const Contact = () => {
   return (
     <>
         <Heading closeButton title="Contact Us" />
-        <h3 style={{ color: '#133D70' }} className="text-center font-weight-bold my-5">Do you have a question, or want to provide feedback to the Resilient MA Action team?</h3>
+        <h3 style={{ color: '#133D70' }} className="text-center font-weight-bold my-3 my-sm-5">Do you have a question, or want to provide feedback to the Resilient MA Action team?</h3>
         <Container>
             <Row>
                 <Col xs={12} sm={5}>
