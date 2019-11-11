@@ -14,6 +14,7 @@ const ActionList = ({ data, setSelectedAction }) => {
         <FontAwesomeIcon className="border" icon={faAngleRight} size="lg" />
       </div>
       <ul className="list-unstyled">
+        {/* list actions returned from api */}
         {data.map((action) => <Action action={action} setSelectedAction={setSelectedAction} />)}
       </ul>
     </>

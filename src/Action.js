@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Action = ({ action, setSelectedAction }) => {
 
+  //updates the currently selected action state in App.js so that ActionDetail knows what data to render
   const updateSelectedAction = () => {
     setSelectedAction(action);
   }

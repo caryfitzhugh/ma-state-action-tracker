@@ -10,7 +10,7 @@ const Contact = () => {
         <Container>
             <Row>
                 <Col xs={12} sm={5}>
-                    <img className="w-100" alt="flame duck (placeholder)" src="https://i.kym-cdn.com/photos/images/newsfeed/001/141/079/8f3.jpg" />
+                    <img className="w-100" alt="placeholder" src="https://www.boston-discovery-guide.com/image-files/800-state-house-flag.jpg" />
                 </Col>
                 <Col xs={12} sm={7}>
                     <form onSubmit="mailto:placeholder@placeholder.com" method="GET">

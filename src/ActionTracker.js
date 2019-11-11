@@ -6,6 +6,7 @@ import Utilities from './Utilities';
 import Heading from './Heading';
 
 const ActionTracker = ({ setSelectedAction }) => {
+
     //const [data, setData] = useState({ actions: [] });
 
     //useEffect(async () => {
@@ -13,6 +14,7 @@ const ActionTracker = ({ setSelectedAction }) => {
     //    return setData(response.body);
     //}, []);
 
+    //since the action track endpoint is not set up yet
     const mockResponse = {
         "data": [
           {
@@ -25,6 +27,16 @@ const ActionTracker = ({ setSelectedAction }) => {
               "name": "Executive Office of Technology Services and Security",
               "href": "string",
               "id": 0
+            },
+            "action_type": {
+                "name": "LOREM TYPE",
+                "href": "string",
+                "id": 0
+            },
+            "action_status": {
+                "name": "LOREM STATUS",
+                "href": "string",
+                "id": 0
             },
             "lead_agency": {
               "name": "Executive Office of Technology Services and Security (EOTSS)",
