@@ -7,11 +7,17 @@ import Heading from './Heading';
 
 const ActionTracker = ({ setSelectedAction }) => {
     const [selectedFilters, setSelectedFilters] = useState([]);
-    //const [data, setData] = useState({ actions: [] });
+    const [data, setData] = useState({ actions: [] });
+    const [filteredData, setFilteredData] = useState({ actions: [] });
+    const [page, setPage] = useState(1);
+    //this default is mocked, should be getting from response
+    const [totalRecords, setTotalRecords] = useState(1);
 
-    //useEffect(async () => {
-    //    const response = await fetch("http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/exec-offices/?page=1&per_page=20");
-    //    return setData(response.body);
+    // useEffect(async () => {
+    //    const params = `page=${page}&per_page=20`
+    //    const response = await fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${params}`);
+    //    setTotalRecords(response.body.data.total)
+    //    return setData(response.body)
     //}, []);
 
     //since the action track endpoint is not set up yet
@@ -75,7 +81,7 @@ const ActionTracker = ({ setSelectedAction }) => {
             ]
           }
         ],
-        "total": 0
+        "total": 50
     };
 
   return (
@@ -89,7 +95,7 @@ const ActionTracker = ({ setSelectedAction }) => {
                 <ActionFilters selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
             </Col>  
             <Col xs={12} sm={9}>
-                <ActionList data={mockResponse.data} setSelectedAction={setSelectedAction} />
+                <ActionList data={mockResponse.data} setSelectedAction={setSelectedAction} page={page} setPage={setPage} totalRecords={totalRecords} />
             </Col>
         </Row> 
     </>

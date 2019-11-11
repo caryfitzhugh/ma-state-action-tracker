@@ -44,12 +44,11 @@ const ActionDetail = ({ selectedAction }) => {
     };
 
     const configureForDataType = (item) => {
-            console.log(typeof item)
-            if (typeof item === 'object') {
-                return <p>{item.name || item[0].name}</p>
-            } else {
-                return null
-            }
+        if (Array.isArray(item)) {
+            return item.map(val => <p>{val.name}</p>)
+        } else {
+            return <p>{item.name}</p>
+        }
     }
 
   return ( 
@@ -61,7 +60,6 @@ const ActionDetail = ({ selectedAction }) => {
                 <h4 className="text-primary font-weight-bold">Completion Timeframe: {calculateTimeFrame()}</h4>
                 <ul className="list-unstyled">
                    {Object.keys(selectedAction).map(item => {
-                       console.log(selectedAction[item])
                        return (
                             <li className="mt-3">
                                 <h4 className="font-weight-bold">{titleMap[item] || null}</h4>
