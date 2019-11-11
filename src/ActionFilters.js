@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import FilterGroup from './FilterGroup';
 import Loading from './Loading';
 
-const ActionFilters = () => {
+const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
   const [filterCategories, setFilterCategories] = useState({});
   const [loadingStatus, setLoadingStatus] = useState(true);
-  const [selectedFilters, setSelectedFilters] = useState([]);
 
   const apiEndpoint = "http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com";
   const routes = [
@@ -84,16 +83,20 @@ const ActionFilters = () => {
 
     const updateFilters = (item) => {
       //remove item from selected filters if it's already in the array, or add it if it isn't
-      if (selectedFilters.includes(item)) {
-        const index = selectedFilters.indexOf(item);
-        const newArray = selectedFilters.splice(index, 1);
+      const testArr = selectedFilters;
+      if (testArr.includes(item)) {
+        const index = testArr.indexOf(item);
+        const newArray = testArr.splice(index, 1);
         setSelectedFilters(newArray);
+        console.log("deselect")
       }
       else {
         const arr = selectedFilters;
         arr.push(item);
         setSelectedFilters(arr);
+        console.log("select")
       }
+      console.log(selectedFilters)
     }
     
   return (

@@ -6,7 +6,7 @@ import Utilities from './Utilities';
 import Heading from './Heading';
 
 const ActionTracker = ({ setSelectedAction }) => {
-
+    const [selectedFilters, setSelectedFilters] = useState([]);
     //const [data, setData] = useState({ actions: [] });
 
     //useEffect(async () => {
@@ -86,7 +86,7 @@ const ActionTracker = ({ setSelectedAction }) => {
         </Row>
         <Row>
             <Col xs={12} sm={3} className="border-right border-dark">
-                <ActionFilters />
+                <ActionFilters selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
             </Col>  
             <Col xs={12} sm={9}>
                 <ActionList data={mockResponse.data} setSelectedAction={setSelectedAction} />

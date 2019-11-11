@@ -31,6 +31,27 @@ const ActionDetail = ({ selectedAction }) => {
         }
     }
 
+    const titleMap = {
+        "exec_office": "Executive Office",
+        "action_type": "Action Type",
+        "action_status": "Action Status",
+        "lead_agency": "Lead Agency",
+        "partners": "Partner(s)",
+        "agency_priority": "Agency Priority Score",
+        "funding_sources": "Possible Funding Source(s)",
+        "shmcap_goals": "SHMCAP Goal(s)",
+        "primary_climate_interactions": "Primary Climate Change Interaction(s)"
+    };
+
+    const configureForDataType = (item) => {
+            console.log(typeof item)
+            if (typeof item === 'object') {
+                return <p>{item.name || item[0].name}</p>
+            } else {
+                return null
+            }
+    }
+
   return ( 
     <>
         <Heading closeButton title="SHMCAP Action Tracker Results"/>
@@ -39,7 +60,15 @@ const ActionDetail = ({ selectedAction }) => {
                 <h2>{selectedAction.name}</h2>
                 <h4 className="text-primary font-weight-bold">Completion Timeframe: {calculateTimeFrame()}</h4>
                 <ul className="list-unstyled">
-                   {mapActionDetails()}
+                   {Object.keys(selectedAction).map(item => {
+                       console.log(selectedAction[item])
+                       return (
+                            <li className="mt-3">
+                                <h4 className="font-weight-bold">{titleMap[item] || null}</h4>
+                                <p>{configureForDataType(selectedAction[item])}</p>
+                            </li>
+                       );
+                    })}
                 </ul>
             </Col>
         </Row>
