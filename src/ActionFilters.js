@@ -83,10 +83,8 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
     },[]);
 
     const updateFilters = (item) => {
-      console.log(item)
       //nextFilters receives the selectedFilters array as props so everything gets a rerender, and state is consistent
       const testArr = nextFilters;
-      console.log(testArr)
       //remove item from selected filters if it's already in the array, or add it if it isn't
       if (testArr.includes(item)) {
         const index = testArr.indexOf(item);
@@ -98,7 +96,6 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
         arr.push(item);
         setSelectedFilters(arr);
       }
-      console.log(selectedFilters)
     }
   
   return (

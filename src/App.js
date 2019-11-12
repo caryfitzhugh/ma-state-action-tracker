@@ -7,7 +7,7 @@ import Contact from './Contact';
 import './ActionTracker.scss'
 
 const App = () => {
-  const [selectedAction, setSelectedAction] = useState({});
+  const [selectedAction, setSelectedAction] = useState(1);
 
   return (
     <Container fluid>
@@ -16,7 +16,7 @@ const App = () => {
             <ActionTracker setSelectedAction={setSelectedAction} />
         </Route>
         <Route path="/detail">
-          {Object.entries(selectedAction).length === 0 && selectedAction.constructor === Object ? <Redirect to="/" /> : <ActionDetail selectedAction={selectedAction} />}
+          <ActionDetail selectedAction={selectedAction} />
         </Route>
         <Route path="/contact">
             <Contact />

@@ -7,82 +7,25 @@ import Heading from './Heading';
 
 const ActionTracker = ({ setSelectedAction }) => {
     const [selectedFilters, setSelectedFilters] = useState([]);
-    const [data, setData] = useState({ actions: [] });
-    const [filteredData, setFilteredData] = useState({ actions: [] });
+    const [actions, setActions] = useState({data: [{}], total: 0});
+    const [filteredData, setFilteredData] = useState([]);
     const [page, setPage] = useState(1);
-    //this default is mocked, should be getting from response
-    const [totalRecords, setTotalRecords] = useState(1);
+    const [loadingStatus, setLoadingStatus] = useState(true);
 
-    // useEffect(async () => {
-    //    const params = `page=${page}&per_page=20`
-    //    const response = await fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${params}`);
-    //    setTotalRecords(response.body.data.total)
-    //    return setData(response.body)
-    //}, []);
+     useEffect(() => {
+      getRecords()
+    }, []);
 
-    //since the action track endpoint is not set up yet
-    const mockResponse = {
-        "data": [
-          {
-            "id": 0,
-            "name": "EOTSS: Migrate CommVault to the cloud", 
-            "start_on": "2017-01-31",
-            "end_on": "2019-02-15",
-            "description": "Migrate CommVault system to the cloud, removing the need to maintain and protect on premise servers for this system.",
-            "exec_office": {
-              "name": "Executive Office of Technology Services and Security",
-              "href": "string",
-              "id": 0
-            },
-            "action_type": {
-                "name": "LOREM TYPE",
-                "href": "string",
-                "id": 0
-            },
-            "action_status": {
-                "name": "LOREM STATUS",
-                "href": "string",
-                "id": 0
-            },
-            "lead_agency": {
-              "name": "Executive Office of Technology Services and Security (EOTSS)",
-              "href": "string",
-              "id": 0
-            },
-            "partners": [
-              {
-                "name": "string",
-                "href": "string",
-                "id": 0
-              }
-            ],
-            "agency_priority": {
-              "name": "High",
-              "id": 0
-            },
-            "funding_sources": [
-              {
-                "name": "State Funding - Capital Budget",
-                "href": "string",
-                "id": 0
-              }
-            ],
-            "shmcap_goals": [
-              {
-                "name": "2,3",
-                "id": 0
-              }
-            ],
-            "primary_climate_interactions": [
-              {
-                "name": "Precipitation Changes, Sea Level Rise, Rising Temperatures, Extreme Weather, Earthquake",
-                "id": 0
-              }
-            ]
-          }
-        ],
-        "total": 50
-    };
+    const getRecords = () => {
+      const params = `page=${page}&per_page=20`
+      let records = []
+       new Promise(() => {
+        fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${params}`)
+        .then(res => res.json())
+        .then(res => setActions(res))
+       })
+       .then(setLoadingStatus(false))
+    }
 
   return (
     <>
@@ -92,10 +35,18 @@ const ActionTracker = ({ setSelectedAction }) => {
         </Row>
         <Row>
             <Col xs={12} sm={3} className="border-right border-dark">
-                <ActionFilters selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
+              <ActionFilters selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
             </Col>  
             <Col xs={12} sm={9}>
-                <ActionList data={mockResponse.data} setSelectedAction={setSelectedAction} page={page} setPage={setPage} totalRecords={totalRecords} />
+              <ActionList 
+                data={actions.data} 
+                setSelectedAction={setSelectedAction} 
+                loadingStatus={loadingStatus} 
+                page={page} 
+                setPage={setPage} 
+                totalRecords={actions.total} 
+                getRecords={getRecords}
+              />
             </Col>
         </Row> 
     </>
