@@ -10,32 +10,41 @@ const ActionDetail = ({ selectedAction }) => {
 
     const apiEndpoint = "http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com";
 
-    //left plenty of room for improvement here
-    useEffect(() => {
-        new Promise(() => {
-         fetch(`${apiEndpoint}/action-tracks/${selectedAction}`)
-         .then(res => res.json())
-         .then(res => {
-             setActionItem(res.data[0]);
-             Promise.all(res.data.map((action) => {
-                 return (
-                Object.keys(action).map((key) => {
-                   if(categoryMap[key] !== undefined) {
-                    fetch(`${apiEndpoint}/${categoryMap[key].route}/get-many/${action[key]}`)
-                    .then(res => res.json())
-                    .then(res => {
-                        res.data.map((value) => {
-                            categoryMap[key].data.push(value.status || value.name)
-                        })
-                    })
-                   }
-                })
-                 )
-             })).then(values => console.log(values))
-         })
-         .then(setActionDetails({...categoryMap}))
-         .then(setLoadingStatus(false))
+    const fetchActionItem = async () => {
+        //get single action
+        const itemResponse = await fetch(`${apiEndpoint}/action-tracks/${selectedAction}`)
+        const itemResult = await itemResponse.json()
+        //set the item to state so we can load the title and timeframe, which are not dependent on another call
+        setActionItem(itemResult.data[0])
+
+        //get the first & only action in the response and make an array from the object's keys
+        const routeNames = Object.keys(itemResult.data[0]);
+        const filteredRouteNames = routeNames.filter(key => categoryMap[key]);
+
+        //take ID's from the action and fetch the details of the action
+        await Promise.all(filteredRouteNames.map(async key => {
+            if(categoryMap[key] !== undefined) {
+                let detailsResponse = await fetch(`${apiEndpoint}/${categoryMap[key].route}/get-many/${itemResult.data[0][key]}`);
+                let detailsResult = detailsResponse.json()
+                categoryMap[key].data = detailsResult
+                detailsResult.name = categoryMap[key].title
+                return detailsResult.then(details => {
+                    return {
+                        data: [...details.data],
+                        title: categoryMap[key].title
+                    }
+                });
+            }
+        })).then(result => {
+            setActionDetails(result)
         })
+
+
+        setLoadingStatus(false);
+    }
+
+    useEffect(() => {
+       fetchActionItem();
     }, []);
 
     //this object is needed to map the keys received from the /action-tracks/:id to endpoints
@@ -116,12 +125,15 @@ const ActionDetail = ({ selectedAction }) => {
 
     const buildDetails = () => {
         return (
-            Object.values(actionDetails).map((key) => {
-                console.log(key.data.length)
-                return (
+            actionDetails.map(item => {
+                return(
                     <li className="mt-3">
-                        <h4 className="font-weight-bold">{key.title}:</h4>
-                        <p>description</p>
+                        <h4 className="mb-0"><b>{item.title}:</b></h4>
+                        {item.data.map((values, i, array) => {
+                            return (
+                                <span>{values.status || values.name || values.action}{i + 1 !== array.length ? ',' : null} </span>
+                            );
+                        })}
                     </li>
                 );
             })
@@ -135,6 +147,8 @@ const ActionDetail = ({ selectedAction }) => {
             <Col xs={12} className="p-sm-5 text-center text-sm-left text-secondary">
                 <h1>{actionItem.title}</h1>
                 <h4 className="text-primary font-weight-bold">Completion Timeframe: {calculateTimeFrame()}</h4>
+                <h4 className="mt-4"><b>Action Description:</b></h4>
+                <span>{actionItem.description}</span>
                 <ul className="list-unstyled">
                    {loadingStatus ? <Loading /> : buildDetails()}
                 </ul>
