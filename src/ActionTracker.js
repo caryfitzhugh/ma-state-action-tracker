@@ -12,7 +12,7 @@ const ActionTracker = ({ setSelectedAction }) => {
     const [page, setPage] = useState(1);
     const [loadingStatus, setLoadingStatus] = useState(true);
 
-     useEffect(() => {
+    useEffect(() => {
       getRecords()
     }, []);
 

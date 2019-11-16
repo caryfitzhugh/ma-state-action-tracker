@@ -38,7 +38,27 @@ const ActionDetail = ({ selectedAction }) => {
                 });
             }
         })).then(result => {
-            setActionDetails(result)
+            const order = [
+                "Action Types",
+                "Action Status",
+                "Executive Office",
+                "Lead Agency",
+                "Partner(s)",
+                "Agency Priorities",
+                "Possible Funding Sources",
+                "SHMCAP Goal(s)",
+                "Primary Climate Change Interaction(s)",
+                "Global Action",
+                "Progress Notes"
+            ];
+
+            //this is needed to order the fields in the order that the BRD specifies, also filter out completion timeframe
+            const sorted = order.map((title) => {
+                const field = result.find((j) => j.title === title);
+                return field;
+            });
+
+            setActionDetails(sorted)
         })
 
         setLoadingStatus(false);

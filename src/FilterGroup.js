@@ -40,7 +40,7 @@ const FilterGroup = ({ items, title, selectedFilters, updateFilters }) => {
       </div>
       {/* map out all filter options for the current category */}
       <ul className={`${setActive} filterGroupList list-unstyled pl-3`} ref={filterGroupContent} style={{ maxHeight: `${setHeight}` }}>
-        {items.map((item, selectedFilters,) => <FilterCheckbox item={item} selectedFilters={selectedFilters} updateFilters={updateFilters} />)}
+        {items.map((item, selectedFilters) => <FilterCheckbox item={item} selectedFilters={selectedFilters} updateFilters={updateFilters} />)}
       </ul>
     </>
   );

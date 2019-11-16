@@ -28,7 +28,7 @@ const ActionList = ({ data, setSelectedAction, page, setPage, totalRecords, load
       <ul className="list-unstyled">
         {/* list actions returned from api */}
         {loadingStatus ? <Loading /> :
-          data.map((action) => <Action action={action} setSelectedAction={setSelectedAction} />)
+          data.lenbg ? <span className="text-danger text-center d-block">No results</span> : data.map((action) => <Action action={action} setSelectedAction={setSelectedAction} />)
         }
       </ul>
     </>

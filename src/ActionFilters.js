@@ -3,115 +3,90 @@ import FilterGroup from './FilterGroup';
 import Loading from './Loading';
 
 const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
-  const [filterCategories, setFilterCategories] = useState({});
+  const [filterCategories, setFilterCategories] = useState([]);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [nextFilters, setNextFilters] = useState(selectedFilters);
 
   const apiEndpoint = "http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com";
-  const routes = [
-    "/action-statuses",
-    "/action-types",
-    "/agency-priorities",
-    "/exec-offices",
-    "/funding-sources",
-    "/global-actions",
-    "/lead-agencies",
-    "/partners",
-    "/primary-climate-interactions",
-    "/shmcap-goals"
-  ];
-  
-  //fetch all action type endpoints to get data for the list of filters
-  useEffect (
-    () => {
-      Promise.all(routes.map(url =>
-        fetch(`${apiEndpoint}${url}`)
-          .then(res => res.json())
-          .then(res => res.data)
-          .then(data => {
-            filterGroupsWithTitles[url].data = data
-          })
-        ))
-        .then(() => {
-          setFilterCategories(filterGroupsWithTitles)
-          setLoadingStatus(false)
-        })
-  },[]);
 
-  //this object exists so a title for the filter group can be associated with a specific URL. otherwise you get an ambiguous array from the api
-  const filterGroupsWithTitles = {
-    "/action-statuses": {
-      title: "Status",
-      data: []
-    },
-    "/action-types": {
-      title: "Action Type",
-      data: []
-    },
-    "/agency-priorities": {
-      title: "Agency Priority Score",
-      data: []
-    },
-    "/exec-offices": {
-      title: "Executive Office",
-      data: []
-    },
-    "/funding-sources": {
-      title: "Funding Source",
-      data: []
-    },
-    "/global-actions": {
-      title: "Global Action",
-      data: []
-    },
-    "/lead-agencies": {
-      title: "Lead Agencies",
-      data: []
-    },
-    "/partners": {
-      title: "Partners",
-      data: []
-    },
-    "/primary-climate-interactions": {
-      title: "Primary Climate Interaction",
-      data: []
-    },
-    "/shmcap-goals": {
-      title: "SHMCAP Goal",
-      data: []
-    },
+  //this object exists for routes and so a title for the filter group can be associated with a specific route
+  const filterGroupTitles = {
+    "/action-statuses": "Status",
+    "/action-types": "Action Type",
+    "/agency-priorities": "Agency Priority Score",
+    "/exec-offices": "Executive Office",
+    "/funding-sources": "Funding Source",
+    "/global-actions":"Global Action",
+    "/lead-agencies": "Lead Agencies",
+    "/partners": "Partners",
+    "/primary-climate-interactions": "Primary Climate Interaction",
+    "/shmcap-goals": "SHMCAP Goal",
   };
 
-    const updateFilters = (item) => {
-      //nextFilters receives the selectedFilters array as props so everything gets a rerender, and state is consistent
-      const testArr = nextFilters;
-      //remove item from selected filters if it's already in the array, or add it if it isn't
-      if (testArr.includes(item)) {
-        const index = testArr.indexOf(item);
-        const newArray = testArr.splice(index, 1);
-        setSelectedFilters(newArray);
-      }
-      else {
-        const arr = nextFilters;
-        arr.push(item);
-        setSelectedFilters(arr);
-      }
+  //fetch all action type endpoints to get data for the list of filters
+  const fetchFilterGroups = async () => {
+    const routes = Object.keys(filterGroupTitles);
+    Promise.all(routes.map(async route => {
+      let filtersResponse = await fetch(`${apiEndpoint}${route}`)
+      let filtersResult = filtersResponse.json();
+      return filtersResult.then(filters => {
+        return {
+          data: filters.data,
+          title: filterGroupTitles[route]
+        }
+      })
+    })).then(data => {
+      console.log(data)
+      setFilterCategories(data)
+      setLoadingStatus(false)
+    })
+  };
+  
+  useEffect(() => {
+    fetchFilterGroups();
+  },[]);
+
+  const updateFilters = (item) => {
+    //nextFilters receives the selectedFilters array as props so everything gets a rerender, and state is consistent
+    const testArr = nextFilters;
+    //remove item from selected filters if it's already in the array, or add it if it isn't
+    if (testArr.includes(item)) {
+      const index = testArr.indexOf(item);
+      const newArray = testArr.splice(index, 1);
+      setSelectedFilters(newArray);
     }
+    else {
+      const arr = nextFilters;
+      arr.push(item);
+      setSelectedFilters(arr);
+    }
+  }
   
   return (
     <>
-        <button className="d-block w-100 text-left text-white btn bg-primary mb-2" onClick={() => console.log(selectedFilters)}>Apply Filters</button>
-        <button className="d-block w-100 text-left btn border" onClick={() => setSelectedFilters([])}>Clear Filters</button>
+        <button 
+          className="d-block w-100 text-left text-white btn bg-primary mb-2" 
+          onClick={() => console.log(selectedFilters)}
+        >
+          Apply Filters
+        </button>
+        <button 
+          className="d-block w-100 text-left btn border" 
+          onClick={() => setSelectedFilters([])}
+        >
+          Clear Filters
+        </button>
         <div className="mt-2">
-          {/* getting the second key of each array directly seems hacky...hope to refactor this */}
-          {loadingStatus ? <Loading /> :
-            Object.entries(filterCategories).map((filter) => 
-            <FilterGroup 
-              selectedFilters={selectedFilters} 
-              updateFilters={updateFilters}
-              items={filter[1].data} 
-              title={filter[1].title} 
-            />)
+          {
+            loadingStatus ? <Loading /> :
+            filterCategories.map((filter) => 
+              <FilterGroup 
+                selectedFilters={selectedFilters} 
+                updateFilters={updateFilters}
+                items={filter.data} 
+                title={filter.title} 
+              />
+            )
           }
         </div>
     </>
