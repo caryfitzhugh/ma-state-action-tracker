@@ -20,8 +20,25 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
     "/primary-climate-interactions",
     "/shmcap-goals"
   ];
+  
+  //fetch all action type endpoints to get data for the list of filters
+  useEffect (
+    () => {
+      Promise.all(routes.map(url =>
+        fetch(`${apiEndpoint}${url}`)
+          .then(res => res.json())
+          .then(res => res.data)
+          .then(data => {
+            filterGroupsWithTitles[url].data = data
+          })
+        ))
+        .then(() => {
+          setFilterCategories(filterGroupsWithTitles)
+          setLoadingStatus(false)
+        })
+  },[]);
 
-  //this object exists so a title for the filter group can be associated with a specific URL.  otherwise you get an ambiguous array from the api
+  //this object exists so a title for the filter group can be associated with a specific URL. otherwise you get an ambiguous array from the api
   const filterGroupsWithTitles = {
     "/action-statuses": {
       title: "Status",
@@ -64,23 +81,6 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
       data: []
     },
   };
-
-  //fetch all action type endpoints to get data for the list of filters
-  useEffect (
-    () => {
-      Promise.all(routes.map(url =>
-        fetch(`${apiEndpoint}${url}`)
-          .then(res => res.json())
-          .then(res => res.data)
-          .then(data => {
-            filterGroupsWithTitles[url].data = data
-          })
-        ))
-        .then(() => {
-          setFilterCategories(filterGroupsWithTitles)
-          setLoadingStatus(false)
-        })
-    },[]);
 
     const updateFilters = (item) => {
       //nextFilters receives the selectedFilters array as props so everything gets a rerender, and state is consistent
