@@ -23,7 +23,6 @@ const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
     );
   }
 
-  console.log(selectedFilters)
   return (
     <>
       <div>

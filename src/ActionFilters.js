@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FilterGroup from './FilterGroup';
 import Loading from './Loading';
 
-const ActionFilters = ({selectedFilters, setFilters, clearFilters }) => {
+const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters }) => {
   const [filterCategories, setFilterCategories] = useState([]);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [nextFilters, setNextFilters] = useState(selectedFilters);
@@ -51,7 +51,7 @@ const ActionFilters = ({selectedFilters, setFilters, clearFilters }) => {
     <>
         <button 
           className="d-block w-100 text-left text-white btn bg-primary mb-2" 
-          onClick={() => console.log(selectedFilters)}
+          onClick={() => applyFilters()}
         >
           Apply Filters
         </button>

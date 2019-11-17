@@ -15,10 +15,10 @@ const ActionTracker = ({ setSelectedAction }) => {
       getRecords()
     }, []);
 
-    const getRecords = () => {
-      const params = `page=${page}&per_page=20`
+    const getRecords = (filterParams = '') => {
+      const paginationParams = `page=${page}&per_page=20`
        new Promise(() => {
-        fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${params}`)
+        fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${paginationParams}${filterParams}`)
         .then(res => res.json())
         .then(res => setActions(res))
        })
@@ -43,23 +43,59 @@ const ActionTracker = ({ setSelectedAction }) => {
     }
 
     const applyFilters = () => {
-      
+      //this is needed to create the route params string to filter the actions based on fields
       const fieldMap = {
-        "/action-statuses": "Status",
-        "/action-types": "Action Type",
-        "/agency-priorities": "Agency Priority Score",
-        "/exec-offices": "Executive Office",
-        "/funding-sources": "Funding Source",
-        "/global-actions":"Global Action",
-        "/lead-agencies": "Lead Agencies",
-        "/partners": "Partners",
-        "/primary-climate-interactions": "Primary Climate Interaction",
-        "/shmcap-goals": "SHMCAP Goal",
+        "Status": {
+          fieldName: "action_status_id",
+          ids: []
+        },
+        "Action Type": {
+          fieldName: "action_type_ids",
+          ids: []
+        }, 
+        "Agency Priority Score": {
+          fieldName: "agency_priority_id",
+          ids: []
+        }, 
+        "Executive Office": {
+          fieldName: "exec_office_id",
+          ids: []
+        }, 
+        "Funding Source": {
+          fieldName: "funding_source_ids",
+          ids: []
+        }, 
+        "Global Action": {
+          fieldName: "global_action_id",
+          ids: []
+        }, 
+        "Lead Agencies": {
+          fieldName: "lead_agency_id",
+          ids: []
+        }, 
+        "Partners": {
+          fieldName: "partner_ids",
+          ids: []
+        }, 
+        "Primary Climate Interaction": {
+          fieldName: "primary_climate_interaction_ids",
+          ids: []
+        }, 
+        "SHMCAP Goal": {
+          fieldName: "shmcap_goal_ids",
+          ids: []
+        }
       };
 
       if(selectedFilters.length > 0) {
-        setLoadingStatus(true)
-        getRecords()
+        //update fieldMap with selected filter ids
+        selectedFilters.forEach(filter => fieldMap[filter.title].ids.push(filter.id));
+        const fieldMapArray = Object.values(fieldMap).filter(object => object.ids.length);
+        const formatParamsArray = fieldMapArray.map(filter => `${filter.fieldName}:${[...filter.ids]}`)
+        const filterParams = `&${formatParamsArray.join("&")}`;
+        console.log(filterParams)
+        setLoadingStatus(true);
+        getRecords(filterParams);
       }
     }
 
@@ -75,6 +111,7 @@ const ActionTracker = ({ setSelectedAction }) => {
                 selectedFilters={selectedFilters} 
                 setFilters={setFilters} 
                 clearFilters={clearFilters}
+                applyFilters={applyFilters}
               />
             </Col>  
             <Col xs={12} sm={9}>
