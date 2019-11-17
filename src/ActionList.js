@@ -1,6 +1,6 @@
 import React from 'react';
 import Action from './Action';
-import Loading from './Loading';
+import Loading from './utils/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 

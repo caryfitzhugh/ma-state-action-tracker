@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Heading from './Heading';
-import Loading from './Loading';
+import Loading from './utils/Loading';
 
 const ActionDetail = ({ selectedAction }) => {
     const [actionItem, setActionItem] = useState({data: []});

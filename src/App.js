@@ -4,7 +4,7 @@ import { HashRouter, Route, Redirect } from 'react-router-dom';
 import ActionTracker from './ActionTracker';
 import ActionDetail from './ActionDetail';
 import Contact from './Contact';
-import './ActionTracker.scss'
+import './sass/ActionTracker.scss'
 
 const App = () => {
   const [selectedAction, setSelectedAction] = useState(1);

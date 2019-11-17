@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FilterGroup from './FilterGroup';
-import Loading from './Loading';
+import Loading from './utils/Loading';
 
 const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters }) => {
   const [filterCategories, setFilterCategories] = useState([]);
