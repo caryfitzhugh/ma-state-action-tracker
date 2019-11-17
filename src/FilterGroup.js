@@ -5,7 +5,7 @@ import FilterCheckbox from './FilterCheckbox';
 import Chevron from './Chevron';
 import './FilterGroup.css';
 
-const FilterGroup = ({ items, title, selectedFilters, updateFilters }) => {
+const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
   const [setActive, setActiveState] = useState("active");
   const [setHeight, setHeightState] = useState("1000px");
   const [setRotate, setRotateState] = useState("accordion__icon");
@@ -23,12 +23,7 @@ const FilterGroup = ({ items, title, selectedFilters, updateFilters }) => {
     );
   }
 
-  //return true or false if the item is in the selectedFilters array or not
-  const determineIfChecked = (name) => {
-    const checked = selectedFilters.indexOf(name) > -1;
-    return checked
-  }
-
+  console.log(selectedFilters)
   return (
     <>
       <div>
@@ -40,7 +35,14 @@ const FilterGroup = ({ items, title, selectedFilters, updateFilters }) => {
       </div>
       {/* map out all filter options for the current category */}
       <ul className={`${setActive} filterGroupList list-unstyled pl-3`} ref={filterGroupContent} style={{ maxHeight: `${setHeight}` }}>
-        {items.map((item, selectedFilters) => <FilterCheckbox item={item} selectedFilters={selectedFilters} updateFilters={updateFilters} />)}
+        {items.map((item) => 
+          <FilterCheckbox 
+            item={item} 
+            title={title} 
+            selectedFilters={selectedFilters} 
+            setFilters={setFilters} 
+          />
+        )}
       </ul>
     </>
   );

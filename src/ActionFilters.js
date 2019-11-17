@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FilterGroup from './FilterGroup';
 import Loading from './Loading';
 
-const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
+const ActionFilters = ({selectedFilters, setFilters, clearFilters }) => {
   const [filterCategories, setFilterCategories] = useState([]);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [nextFilters, setNextFilters] = useState(selectedFilters);
@@ -36,7 +36,6 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
         }
       })
     })).then(data => {
-      console.log(data)
       setFilterCategories(data)
       setLoadingStatus(false)
     })
@@ -46,21 +45,7 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
     fetchFilterGroups();
   },[]);
 
-  const updateFilters = (item) => {
-    //nextFilters receives the selectedFilters array as props so everything gets a rerender, and state is consistent
-    const testArr = nextFilters;
-    //remove item from selected filters if it's already in the array, or add it if it isn't
-    if (testArr.includes(item)) {
-      const index = testArr.indexOf(item);
-      const newArray = testArr.splice(index, 1);
-      setSelectedFilters(newArray);
-    }
-    else {
-      const arr = nextFilters;
-      arr.push(item);
-      setSelectedFilters(arr);
-    }
-  }
+  //console.log(selectedFilters)
   
   return (
     <>
@@ -72,7 +57,7 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
         </button>
         <button 
           className="d-block w-100 text-left btn border" 
-          onClick={() => setSelectedFilters([])}
+          onClick={() => clearFilters([])}
         >
           Clear Filters
         </button>
@@ -82,7 +67,7 @@ const ActionFilters = ({selectedFilters, setSelectedFilters }) => {
             filterCategories.map((filter) => 
               <FilterGroup 
                 selectedFilters={selectedFilters} 
-                updateFilters={updateFilters}
+                setFilters={setFilters}
                 items={filter.data} 
                 title={filter.title} 
               />
