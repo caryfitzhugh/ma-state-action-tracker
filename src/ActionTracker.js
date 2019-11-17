@@ -15,10 +15,10 @@ const ActionTracker = ({ setSelectedAction }) => {
     getRecords()
   }, []);
 
-  const getRecords = (filterParams = '', queryParam = '') => {
-    const paginationParams = `page=${page}&per_page=20`
+  const getRecords = (filterParams = 'filter={}', queryParam = '') => {
+    const paginationParams = `&page=${page}&per_page=1`
      new Promise(() => {
-      fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${paginationParams}${filterParams}${queryParam}`)
+      fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${filterParams}${paginationParams}${queryParam}&sort_by_field=id&sort_by_order=DESC`)
       .then(res => res.json())
       .then(res => setActions(res))
      })
@@ -42,7 +42,7 @@ const ActionTracker = ({ setSelectedAction }) => {
     }
   }
 
-  const applyFilters = () => {
+  const applyFilters = (query = '') => {
     //this is needed to create the route params string to filter the actions based on fields
     const fieldMap = {
       "Status": {
@@ -87,29 +87,25 @@ const ActionTracker = ({ setSelectedAction }) => {
       }
     };
 
-    if(selectedFilters.length > 0) {
+    if(selectedFilters.length > 0 || query !== "") {
       //update fieldMap with selected filter ids
       selectedFilters.forEach(filter => fieldMap[filter.title].ids.push(filter.id));
       const fieldMapArray = Object.values(fieldMap).filter(object => object.ids.length);
-      const formatParamsArray = fieldMapArray.map(filter => `${filter.fieldName}:${[...filter.ids]}`)
-      const filterParams = `&${formatParamsArray.join("&")}`;
+      const formatParamsArray = fieldMapArray.map(filter => `"${filter.fieldName}": [${[...filter.ids]}]`)
+      const filterParams = `filter={${formatParamsArray.join(",")}}`;
+      const queryParam = query === "" ? "" : `&query=${query}`;
       setLoadingStatus(true);
-      getRecords(filterParams);
+      getRecords(filterParams, queryParam);
     }
   };
-
-  const searchActions = (query) => {
-    const queryParam = query === "" ? "" : `&query=${query}`;
-    setLoadingStatus(true);
-    getRecords(queryParam);
-  }
 
   return (
     <>
         <Heading title="SHMCAP Action Tracker"/>
         <Row className="my-4">
             <Utilities 
-              searchActions={searchActions} 
+              applyFilters={applyFilters} 
+              getRecords={getRecords}
             />
         </Row>
         <Row>

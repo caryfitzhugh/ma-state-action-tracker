@@ -57,6 +57,7 @@ const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters 
         </button>
         <button 
           className="d-block w-100 text-left btn border" 
+          disabled={!selectedFilters.length}
           onClick={() => clearFilters([])}
         >
           Clear Filters

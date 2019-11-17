@@ -6,7 +6,7 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 const ActionList = ({ data, setSelectedAction, page, setPage, totalRecords, loadingStatus, getRecords }) => {
 
-  const totalPages = totalRecords !== 0 ? Math.ceil(totalRecords / 20) : 1;
+  const totalPages = totalRecords !== 0 ? Math.ceil(totalRecords / 10) : 1;
 
   const navigate = (direction) => {
     if (direction === "back")

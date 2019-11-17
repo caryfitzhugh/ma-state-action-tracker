@@ -129,7 +129,7 @@ const ActionDetail = ({ selectedAction }) => {
                         <h4 className="mb-0"><b>{item.title}:</b></h4>
                         {item.data.map((values, i, array) => {
                             return (
-                                <span>{values.status || values.name || values.action}{i + 1 !== array.length ? ',' : null} </span>
+                                <span>{values.status || values.name || values.action || values.type}{i + 1 !== array.length ? ',' : null} </span>
                             );
                         })}
                     </li>
