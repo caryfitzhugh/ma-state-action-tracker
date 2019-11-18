@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { CSVLink } from "react-csv";
 import './sass/Utilities.scss';
 
-const Utilities = ({ applyFilters, getRecords }) => {
+const Utilities = ({ applyFilters, data }) => {
   const [searchValue, setSearchValue] = useState("");
 
   const handleChange = (event) => {
@@ -19,11 +20,11 @@ const Utilities = ({ applyFilters, getRecords }) => {
   
   return (
    <Col className="utilities">
-        <button className="utility btn btn-primary mr-3">Download CSV</button>
+        <CSVLink className="utility btn btn-primary mr-3" data={data}>Download CSV</CSVLink>
         <input className="utility" type="text" placeholder="Search..." value={searchValue} onChange={(event) => handleChange(event)}></input>
         <button className="btn btn-primary py-1 ml-1" type="submit" onClick={(event) => handleSubmit(event)}>Submit</button>
         <button className="btn py-1 ml-1 border" disabled={!searchValue.length} onClick={() => {
-            getRecords()
+            applyFilters()
             setSearchValue("")
           }
         }>

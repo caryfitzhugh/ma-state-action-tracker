@@ -15,15 +15,43 @@ const ActionTracker = ({ setSelectedAction }) => {
     getRecords()
   }, []);
 
-  const getRecords = (filterParams = 'filter={}', queryParam = '') => {
-    const paginationParams = `&page=${page}&per_page=1`
+  const getRecords = (filterParams = 'filter={}', queryParam = '', nextPage = 1) => {
+    console.log(nextPage)
+    const paginationParams = `&page=${nextPage}&per_page=10`
      new Promise(() => {
       fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?${filterParams}${paginationParams}${queryParam}&sort_by_field=id&sort_by_order=DESC`)
       .then(res => res.json())
       .then(res => setActions(res))
      })
      .then(setLoadingStatus(false))
-  }
+  };
+
+  const calculateTotalPages = () => {
+    let total;
+    if (actions.total <= 10) {
+      total = 1;
+    } else if (actions.total % 10 !== 0) {
+      total = Math.ceil(actions.total / 10);
+    } else {
+      total = actions.total / 10
+    }
+    return total;
+  };
+
+  const navigatePages = (direction) => {
+    const totalPages = calculateTotalPages();
+    let nextPage = page;
+    if (totalPages !== nextPage) {
+      if (direction === "back") {
+        nextPage = page === 1 ? page : page - 1;
+        setPage(nextPage)
+      } else {
+        nextPage = page < totalPages ? page + 1 : page
+        setPage(nextPage)
+        getRecords(undefined, undefined, nextPage)
+      }
+    }
+  };
 
   const setFilters = (text, id, title) => {
     const removeFilterFromSelected = selectedFilters.filter(obj => obj.text !== text);
@@ -32,7 +60,7 @@ const ActionTracker = ({ setSelectedAction }) => {
     } else {
       setSelectedFilters([...selectedFilters, {title: title, id: id, text: text}]);
     }
-  }
+  };
   
   const clearFilters = () => {
     if(selectedFilters.length > 0) {
@@ -96,6 +124,8 @@ const ActionTracker = ({ setSelectedAction }) => {
       const queryParam = query === "" ? "" : `&query=${query}`;
       setLoadingStatus(true);
       getRecords(filterParams, queryParam);
+    } else {
+      getRecords();
     }
   };
 
@@ -105,7 +135,7 @@ const ActionTracker = ({ setSelectedAction }) => {
         <Row className="my-4">
             <Utilities 
               applyFilters={applyFilters} 
-              getRecords={getRecords}
+              data={actions.data}
             />
         </Row>
         <Row>
@@ -120,12 +150,14 @@ const ActionTracker = ({ setSelectedAction }) => {
             <Col xs={12} sm={9}>
               <ActionList 
                 data={actions.data} 
+                total={actions.total}
                 setSelectedAction={setSelectedAction} 
                 loadingStatus={loadingStatus} 
                 page={page} 
-                setPage={setPage} 
+                totalPages={calculateTotalPages()}
                 totalRecords={actions.total} 
                 getRecords={getRecords}
+                navigatePages={navigatePages}
               />
             </Col>
         </Row> 
