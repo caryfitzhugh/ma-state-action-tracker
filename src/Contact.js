@@ -13,7 +13,7 @@ const Contact = () => {
                     <img className="w-100" alt="placeholder" src="https://www.boston-discovery-guide.com/image-files/800-state-house-flag.jpg" />
                 </Col>
                 <Col xs={12} sm={7}>
-                    <form onSubmit="mailto:placeholder@placeholder.com" method="GET">
+                    <form onSubmit="mailto:marybeth.groff@mass.gov" method="GET">
                         <Row>
                             <Col xs={12} sm={6}>
                                 <span>First Name</span>
