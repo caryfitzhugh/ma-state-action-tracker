@@ -17,7 +17,7 @@ const ActionDetail = ({ selectedAction }) => {
 
         //set the item to state so we can load the title and timeframe, which are not dependent on another call
         setActionItem(itemResult.data[0])
-        
+
         //get the first & only action in the response and make an array from the object's keys
         const routeNames = Object.keys(itemResult.data[0]);
         const filteredRouteNames = routeNames.filter(key => categoryMap[key]);
@@ -129,7 +129,7 @@ const ActionDetail = ({ selectedAction }) => {
                         <h4 className="mb-0"><b>{item.title}:</b></h4>
                         {item.data.map((values, i, array) => {
                             return (
-                                <span>{values.status || values.name || values.action || values.type}{i + 1 !== array.length ? ',' : null} </span>
+                                <span key={JSON.stringify(values)} >{values.status || values.name || values.action || values.type}{i + 1 !== array.length ? ',' : null} </span>
                             );
                         })}
                     </li>
@@ -147,7 +147,7 @@ const ActionDetail = ({ selectedAction }) => {
         );
     }
 
-  return ( 
+  return (
     <>
         <Heading closeButton title="SHMCAP Action Tracker Results"/>
         <Row className="mt-3 mt-sm-0">

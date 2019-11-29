@@ -66,8 +66,9 @@ const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters 
         <div className="mt-2">
           {
             loadingStatus ? <Loading /> :
-            filterCategories.map((filter) =>
+            filterCategories.map((filter, i) =>
               <FilterGroup
+                key={"filter-group-" + i}
                 selectedFilters={selectedFilters}
                 setFilters={setFilters}
                 items={filter.data}

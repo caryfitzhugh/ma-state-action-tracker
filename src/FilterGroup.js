@@ -31,8 +31,9 @@ const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
       </div>
       {/* map out all filter options for the current category */}
       <ul className={`${setActive} filterGroupList list-unstyled pl-3`} ref={filterGroupContent} style={{ maxHeight: `${setHeight}` }}>
-        {items.map((item) =>
+        {items.map((item, i) =>
           <FilterCheckbox
+            key={title + "-checkbox-" + i + "-" + JSON.stringify(item)}
             item={item}
             title={title}
             selectedFilters={selectedFilters}

@@ -13,26 +13,27 @@ const FilterCheckbox = ({ item, setFilters, selectedFilters, title }) => {
     const checked = filteredArray.length > 0 ? true : false;
     return checked
   }
-
+  const computed_name = (item.type || item.status || item.name || item.action);
+  const display_name = computed_name.trim();
   return (
     <li>
-        <input name={item.type || item.status || item.name || item.action} 
-          className="mr-1" 
-          type="checkbox" 
-          checked={determineChecked()} 
-          onClick={() => setFilters((item.type || item.status || item.name || item.action), item.id, title)} 
+        <input name={computed_name}
+          className="mr-1"
+          type="checkbox"
+          checked={determineChecked()}
+          onChange={() => setFilters(computed_name, item.id, title)}
         />
-        <span 
-          className="mr-1" 
+        <span
+          className="mr-1"
           style={{cursor: "pointer"}}
-          onClick={() => setFilters((item.type || item.status || item.name || item.action), item.id, title)}>{item.type || item.status || item.name || item.action}
+          onClick={() => setFilters(computed_name, item.id, title)}>{display_name}
         </span>
-        {item.description ? 
+        {item.description ?
           <OverlayTrigger
             placement="right"
             overlay={
-              <Popover id={`${item.type || item.status || item.name || item.action}`} style={{borderColor: '#C74D00', borderWidth: '3px'}}>
-                <Popover.Title as="h3" style={{color: '#2B1E76', fontSize: '18px'}}><b>{item.type || item.status || item.name || item.action}</b></Popover.Title>
+              <Popover id={computed_name} style={{borderColor: '#C74D00', borderWidth: '3px'}}>
+                <Popover.Title as="h3" style={{color: '#2B1E76', fontSize: '18px'}}><b>{display_name}</b></Popover.Title>
                 <Popover.Content>
                   {item.description}
                 </Popover.Content>

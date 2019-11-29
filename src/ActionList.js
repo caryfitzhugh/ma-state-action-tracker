@@ -12,12 +12,12 @@ const ActionList = ({ totalPages, data, setSelectedAction, page, navigatePages, 
         <span className="mr-2 d-block d-sm-inline">{totalRecords} Results</span>
         <FontAwesomeIcon className="border" icon={faAngleLeft} size="lg" onClick={() => navigatePages("back")} />
         <span className="mx-2">Page {page} of {totalPages}</span>
-        <FontAwesomeIcon className="border" icon={faAngleRight} size="lg" onClick={() => navigatePages("next")}/>
+        <FontAwesomeIcon className="border" icon={faAngleRight} size="lg" onClick={() => navigatePages("forward")}/>
       </div>
       <ul className="list-unstyled">
         {/* list actions returned from api */}
         {loadingStatus ? <Loading /> :
-          data.map((action) => <Action action={action} setSelectedAction={setSelectedAction} />)
+          data.map((action) => <Action key={"action-id-" + action.id} action={action} setSelectedAction={setSelectedAction} />)
         }
       </ul>
     </>
