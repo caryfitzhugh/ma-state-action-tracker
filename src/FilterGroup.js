@@ -4,9 +4,9 @@ import Chevron from './utils/Chevron';
 import './sass/FilterGroup.scss';
 
 const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
-  const [setActive, setActiveState] = useState("active");
-  const [setHeight, setHeightState] = useState("1000px");
-  const [setRotate, setRotateState] = useState("accordion__icon");
+  const [setActive, setActiveState] = useState("");
+  const [setHeight, setHeightState] = useState("0px");
+  const [setRotate, setRotateState] = useState("accordion__icon rotate");
 
   const filterGroupContent = useRef(null);
 
@@ -31,12 +31,12 @@ const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
       </div>
       {/* map out all filter options for the current category */}
       <ul className={`${setActive} filterGroupList list-unstyled pl-3`} ref={filterGroupContent} style={{ maxHeight: `${setHeight}` }}>
-        {items.map((item) => 
-          <FilterCheckbox 
-            item={item} 
-            title={title} 
-            selectedFilters={selectedFilters} 
-            setFilters={setFilters} 
+        {items.map((item) =>
+          <FilterCheckbox
+            item={item}
+            title={title}
+            selectedFilters={selectedFilters}
+            setFilters={setFilters}
           />
         )}
       </ul>
