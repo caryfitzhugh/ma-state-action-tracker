@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FilterGroup from './FilterGroup';
 import Loading from './utils/Loading';
+import './sass/ActionFilters.scss';
 
 const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters }) => {
   const [filterCategories, setFilterCategories] = useState([]);
@@ -40,23 +41,23 @@ const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters 
       setLoadingStatus(false)
     })
   };
-  
+
   useEffect(() => {
     fetchFilterGroups();
   },[]);
 
   //console.log(selectedFilters)
-  
+
   return (
     <>
-        <button 
-          className="d-block w-100 text-left text-white btn bg-primary mb-2" 
+        <button
+          className="d-block w-100 text-left text-white btn bg-primary mb-2"
           onClick={() => applyFilters()}
         >
           Apply Filters
         </button>
-        <button 
-          className="d-block w-100 text-left btn border" 
+        <button
+          className="d-block w-100 text-left btn border clear"
           disabled={!selectedFilters.length}
           onClick={() => clearFilters([])}
         >
@@ -65,12 +66,12 @@ const ActionFilters = ({ selectedFilters, setFilters, clearFilters,applyFilters 
         <div className="mt-2">
           {
             loadingStatus ? <Loading /> :
-            filterCategories.map((filter) => 
-              <FilterGroup 
-                selectedFilters={selectedFilters} 
+            filterCategories.map((filter) =>
+              <FilterGroup
+                selectedFilters={selectedFilters}
                 setFilters={setFilters}
-                items={filter.data} 
-                title={filter.title} 
+                items={filter.data}
+                title={filter.title}
               />
             )
           }
