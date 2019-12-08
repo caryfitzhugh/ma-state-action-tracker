@@ -14,6 +14,7 @@ const Utilities = ({ applyFilters, data }) => {
   }
 
   const handleSubmit = (event) => {
+    setSearchValue(event.target.value);
     applyFilters(searchValue);
     event.preventDefault();
   }
@@ -21,7 +22,16 @@ const Utilities = ({ applyFilters, data }) => {
   return (
    <Col className="utilities">
         <CSVLink className="utility btn btn-primary mr-3" data={data}>Download CSV</CSVLink>
-        <input className="utility" type="text" placeholder="Search..." value={searchValue} onChange={(event) => handleChange(event)}></input>
+        <input className="utility"
+          type="text"
+          placeholder="Search..."
+          value={searchValue}
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              handleSubmit(event);
+            }
+          }}
+          onChange={(event) => handleChange(event)}></input>
         <button className="btn btn-primary py-1 ml-1" type="submit" onClick={(event) => handleSubmit(event)}>Search</button>
         <button className="btn py-1 ml-1 border" disabled={!searchValue.length} onClick={() => {
             applyFilters()

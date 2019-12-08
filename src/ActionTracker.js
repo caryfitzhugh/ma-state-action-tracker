@@ -5,51 +5,121 @@ import { Row, Col } from 'react-bootstrap';
 import Utilities from './Utilities';
 import Heading from './Heading';
 import { useHistory } from "react-router-dom";
+import config from "./Config.js";
 
 const PER_PAGE = 30;
 
 const ActionTracker = ({ setSelectedAction }) => {
-  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [filterCategories, setFilterCategories] = useState([]);
+  const [currentQuery, setCurrentQuery] = useState("");
+  const [currentFilters, setCurrentFilters] = useState({});
+
+  const [selectedFilters, setSelectedFilters] = useState({});
+
   const [actions, setActions] = useState({data: [{}], total: 0});
   const [page, setPage] = useState(1);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const history = useHistory();
 
+  const filterGroupDetails = {
+    "/action-statuses": {
+      title:  "Status",
+      filter_key: "action_status_id"
+    },
+    "/action-types":  {
+      title: "Action Type",
+      filter_key: "action_type_ids",
+    },
+    "/agency-priorities": {
+      title: "Agency Priority Score",
+      filter_key: "agency_priority_id",
+    },
+    "/exec-offices": {
+      title: "Executive Office",
+      filter_key: "exec_office_id",
+    },
+    "/funding-sources": {
+      title: "Funding Source",
+      filter_key: "funding_source_ids",
+    },
+    "/global-actions": {
+      title: "Global Action",
+      filter_key: "global_action_id",
+    },
+    "/lead-agencies": {
+      title: "Lead Agencies",
+      filter_key: "lead_agency_id",
+    },
+    "/partners": {
+      title: "Partners",
+      filter_key: "partner_ids",
+    },
+    "/primary-climate-interactions": {
+      title: "Primary Climate Interaction",
+      filter_key: "primary_climate_interaction_ids",
+    },
+    "/shmcap-goals": {
+      title: "SHMCAP Goal",
+      filter_key: "shmcap_goal_ids"
+    },
+  };
+
+  //this object exists for routes and so a title for the filter group can be associated with a specific route
+  //fetch all action type endpoints to get data for the list of filters
+  const fetchFilterGroups = async () => {
+    const routes = Object.keys(filterGroupDetails);
+    Promise.all(routes.map(async route => {
+      let filtersResponse = await fetch(`${config.api_host}${route}`)
+      let filtersResult = filtersResponse.json();
+      return filtersResult.then(filters => {
+
+        return Object.assign({},
+          filterGroupDetails[route],
+          {
+            data: filters.data.map((d) => {
+              d.computed_name = (d.type || d.status || d.name || d.action);
+              d.display_name = d.computed_name.trim();
+              return d;
+            })
+          });
+        });
+      })).then(data => {
+        setFilterCategories(data)
+      })
+  };
+
+
   useEffect(() => {
-    getRecords()
+    getRecords();
+    fetchFilterGroups();
   }, []);
 
-  const getParam = function(name){
-      var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(history.location.search);
-      if (results == null){
-        return null;
-      }
-      else {
-        return decodeURI(results[1]) || 0;
-      }
-  }
-
-  const getRecords = (filterParams = undefined, queryParam = undefined, nextPage = 1) => {
+  const getRecords = (filterParams = undefined,
+                      queryParam = undefined,
+                      nextPage = 1) => {
+    setLoadingStatus(true)
     // If the filterParams are undefined , pull from the query string
     if (filterParams === undefined) {
-      filterParams = getParam("filter") || '{}';
+      filterParams = currentFilters;
     }
     // If the query params are undefined, pull from the query string
     if (queryParam === undefined) {
-      queryParam = getParam('query') || "";
+      queryParam = currentQuery;
     }
 
     // Set the query string (so we remember what we had)
-    const qs = "?filter=" + filterParams + "&query=" + queryParam;
-    history.replace(qs);
+    setCurrentQuery(queryParam);
+
+    setCurrentFilters(Object.assign({}, filterParams));
     const paginationParams = `&page=${nextPage}&per_page=${PER_PAGE}`
 
-    new Promise(() => {
-    fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?filter=${filterParams}${paginationParams}&query=${queryParam}&sort_by_field=id&sort_by_order=DESC`)
-    .then(res => res.json())
-    .then(res => setActions(res))
-    })
-    .then(setLoadingStatus(false))
+    new Promise((ok, err) => {
+      fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?filter=${JSON.stringify(filterParams)}${paginationParams}&query=${queryParam}&sort_by_field=id&sort_by_order=DESC`)
+      .then(res => res.json())
+      .then(res => setActions(res))
+      .then((res) => setLoadingStatus(false))
+      .then(res => ok())
+    });
   };
 
   const calculateTotalPages = () => {
@@ -80,79 +150,37 @@ const ActionTracker = ({ setSelectedAction }) => {
     }
   };
 
-  const setFilters = (text, id, title) => {
-    const removeFilterFromSelected = selectedFilters.filter(obj => obj.text !== text);
-    if (removeFilterFromSelected.length !== selectedFilters.length) {
-      setSelectedFilters(removeFilterFromSelected);
+  const setFilters = (text, filter_key, id, title) => {
+    if (selectedFilters[filter_key]) {
+      if (selectedFilters[filter_key].includes(id)){
+        selectedFilters[filter_key] =
+          selectedFilters[filter_key].filter(item => item !== id)
+        if (selectedFilters[filter_key].length == 0) {
+          delete selectedFilters[filter_key];
+        }
+      } else {
+        selectedFilters[filter_key].push(id);
+      }
     } else {
-      setSelectedFilters([...selectedFilters, {title: title, id: id, text: text}]);
+      selectedFilters[filter_key] = [id];
     }
+
+    setSelectedFilters(Object.assign({}, selectedFilters));
   };
 
   const clearFilters = () => {
     if(selectedFilters.length > 0) {
-      setSelectedFilters([])
-      setLoadingStatus(true)
-      getRecords()
+      setSelectedFilters({});
+      getRecords({}, '');
     }
   }
 
   const applyFilters = (query = '') => {
     //this is needed to create the route params string to filter the actions based on fields
-    const fieldMap = {
-      "Status": {
-        fieldName: "action_status_id",
-        ids: []
-      },
-      "Action Type": {
-        fieldName: "action_type_ids",
-        ids: []
-      },
-      "Agency Priority Score": {
-        fieldName: "agency_priority_id",
-        ids: []
-      },
-      "Executive Office": {
-        fieldName: "exec_office_id",
-        ids: []
-      },
-      "Funding Source": {
-        fieldName: "funding_source_ids",
-        ids: []
-      },
-      "Global Action": {
-        fieldName: "global_action_id",
-        ids: []
-      },
-      "Lead Agencies": {
-        fieldName: "lead_agency_id",
-        ids: []
-      },
-      "Partners": {
-        fieldName: "partner_ids",
-        ids: []
-      },
-      "Primary Climate Interaction": {
-        fieldName: "primary_climate_interaction_ids",
-        ids: []
-      },
-      "SHMCAP Goal": {
-        fieldName: "shmcap_goal_ids",
-        ids: []
-      }
-    };
-
-    if(selectedFilters.length > 0 || query !== "") {
-      //update fieldMap with selected filter ids
-      selectedFilters.forEach(filter => fieldMap[filter.title].ids.push(filter.id));
-      const fieldMapArray = Object.values(fieldMap).filter(object => object.ids.length);
-      const formatParamsArray = fieldMapArray.map(filter => `"${filter.fieldName}": [${[...filter.ids]}]`)
-      const filterParams = `{${formatParamsArray.join(",")}}`;
-      const queryParam = query === "" ? "" : query;
-      setLoadingStatus(true);
-      getRecords(filterParams, queryParam);
+    if(Object.keys(selectedFilters).length > 0 || query !== "") {
+      getRecords(selectedFilters, query);
     } else {
-      getRecords();
+      getRecords({}, "");
     }
   };
 
@@ -172,6 +200,7 @@ const ActionTracker = ({ setSelectedAction }) => {
                 setFilters={setFilters}
                 clearFilters={clearFilters}
                 applyFilters={applyFilters}
+                filterCategories={filterCategories}
               />
             </Col>
             <Col xs={12} sm={9}>
@@ -180,11 +209,15 @@ const ActionTracker = ({ setSelectedAction }) => {
                 total={actions.total}
                 setSelectedAction={setSelectedAction}
                 loadingStatus={loadingStatus}
+                selectedFilters={selectedFilters}
+                currentQuery={currentQuery}
+                currentFilters={currentFilters}
                 page={page}
                 totalPages={calculateTotalPages()}
                 totalRecords={actions.total}
                 getRecords={getRecords}
                 navigatePages={navigatePages}
+                filterCategories={filterCategories}
               />
             </Col>
         </Row>

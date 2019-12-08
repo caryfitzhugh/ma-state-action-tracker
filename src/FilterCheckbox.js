@@ -3,37 +3,34 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-const FilterCheckbox = ({ item, setFilters, selectedFilters, title }) => {
-
+const FilterCheckbox = ({ item, setFilters, selectedFilters, title, filter_key}) => {
   const determineChecked = () => {
-    const filteredArray = selectedFilters.filter(obj => {
-      const standardizedName = item.type || item.status || item.name || item.action;
-      return obj.text === standardizedName
-    });
-    const checked = filteredArray.length > 0 ? true : false;
-    return checked
+    if (selectedFilters[filter_key]) {
+        if (selectedFilters[filter_key].includes(item.id)) {
+            return true;
+        }
+    }
+    return false;
   }
-  const computed_name = (item.type || item.status || item.name || item.action);
-  const display_name = computed_name.trim();
   return (
     <li>
-        <input name={computed_name}
+        <input name={item.computed_name}
           className="mr-1"
           type="checkbox"
           checked={determineChecked()}
-          onChange={() => setFilters(computed_name, item.id, title)}
+          onChange={() => setFilters(item.computed_name, filter_key, item.id, title)}
         />
         <span
           className="mr-1"
           style={{cursor: "pointer"}}
-          onClick={() => setFilters(computed_name, item.id, title)}>{display_name}
+          onClick={() => setFilters(item.computed_name, filter_key, item.id, title)}>{item.display_name}
         </span>
         {item.description ?
           <OverlayTrigger
             placement="right"
             overlay={
-              <Popover id={computed_name} style={{borderColor: '#C74D00', borderWidth: '3px'}}>
-                <Popover.Title as="h3" style={{color: '#2B1E76', fontSize: '18px'}}><b>{display_name}</b></Popover.Title>
+              <Popover id={item.computed_name} style={{borderColor: '#C74D00', borderWidth: '3px'}}>
+                <Popover.Title as="h3" style={{color: '#2B1E76', fontSize: '18px'}}><b>{item.display_name}</b></Popover.Title>
                 <Popover.Content>
                   {item.description}
                 </Popover.Content>

@@ -3,7 +3,8 @@ import FilterCheckbox from './FilterCheckbox';
 import Chevron from './utils/Chevron';
 import './sass/FilterGroup.scss';
 
-const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
+
+const FilterGroup = ({ items, title, filter_key, selectedFilters, setFilters }) => {
   const [setActive, setActiveState] = useState("");
   const [setHeight, setHeightState] = useState("0px");
   const [setRotate, setRotateState] = useState("accordion__icon rotate");
@@ -35,6 +36,7 @@ const FilterGroup = ({ items, title, selectedFilters, setFilters }) => {
           <FilterCheckbox
             key={title + "-checkbox-" + i + "-" + JSON.stringify(item)}
             item={item}
+            filter_key={filter_key}
             title={title}
             selectedFilters={selectedFilters}
             setFilters={setFilters}
