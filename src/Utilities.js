@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import { CSVLink } from "react-csv";
 import './sass/Utilities.scss';
 
-const Utilities = ({ applyFilters, data }) => {
-  const [searchValue, setSearchValue] = useState("");
+const Utilities = ({ applyFilters, data, currentQuery }) => {
+  const [searchValue, setSearchValue] = useState(false);
 
   const handleChange = (event) => {
     setSearchValue(event.target.value);
@@ -25,7 +25,7 @@ const Utilities = ({ applyFilters, data }) => {
         <input className="utility"
           type="text"
           placeholder="Search..."
-          value={searchValue}
+          value={searchValue || currentQuery}
           onKeyPress={event => {
             if (event.key === 'Enter') {
               handleSubmit(event);
@@ -33,7 +33,8 @@ const Utilities = ({ applyFilters, data }) => {
           }}
           onChange={(event) => handleChange(event)}></input>
         <button className="btn btn-primary py-1 ml-1" type="submit" onClick={(event) => handleSubmit(event)}>Search</button>
-        <button className="btn py-1 ml-1 border" disabled={!searchValue.length} onClick={() => {
+        <button className="btn py-1 ml-1 border"
+            disabled={!(searchValue || currentQuery).length} onClick={() => {
             applyFilters()
             setSearchValue("")
           }

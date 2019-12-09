@@ -9,7 +9,7 @@ import config from "./Config.js";
 
 const PER_PAGE = 30;
 
-const ActionTracker = ({ setSelectedAction }) => {
+const ActionTracker = ({}) => {
   const [filterCategories, setFilterCategories] = useState([]);
   const [currentQuery, setCurrentQuery] = useState("");
   const [currentFilters, setCurrentFilters] = useState({});
@@ -91,10 +91,24 @@ const ActionTracker = ({ setSelectedAction }) => {
         setFilterCategories(data)
       })
   };
-
+  function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(history.location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  };
 
   useEffect(() => {
-    getRecords();
+    let urlFilters = undefined;
+    if (getUrlParameter('currentFilters')) {
+        urlFilters = JSON.parse(getUrlParameter('currentFilters'));
+    }
+    let urlQuery = undefined;
+    if (getUrlParameter('currentQuery')) {
+        urlQuery = getUrlParameter('currentQuery');
+    }
+
+    getRecords(urlFilters, urlQuery, 1);
     fetchFilterGroups();
   }, []);
 
@@ -118,7 +132,7 @@ const ActionTracker = ({ setSelectedAction }) => {
     const paginationParams = `&page=${nextPage}&per_page=${PER_PAGE}`
 
     new Promise((ok, err) => {
-      fetch(`${config.api_host}/action-tracks/?filter=${JSON.stringify(filterParams)}${paginationParams}&query=${queryParam}&sort_by_field=id&sort_by_order=DESC`)
+      fetch(`${config.api_host}/action-tracks/?filter=${JSON.stringify(filterParams)}${paginationParams}&query=${queryParam}&sort_by_field=title&sort_by_order=ASC`)
       .then(res => res.json())
       .then(res => setActions(res))
       .then((res) => setLoadingStatus(false))
@@ -173,10 +187,8 @@ const ActionTracker = ({ setSelectedAction }) => {
   };
 
   const clearFilters = () => {
-    if(selectedFilters.length > 0) {
-      setSelectedFilters({});
-      getRecords({}, '');
-    }
+    setSelectedFilters({});
+    getRecords({}, '');
   }
 
   const applyFilters = (query = '') => {
@@ -194,6 +206,7 @@ const ActionTracker = ({ setSelectedAction }) => {
         <Heading title="SHMCAP Action Tracker"/>
         <Row className="my-4">
             <Utilities
+              currentQuery={currentQuery}
               applyFilters={applyFilters}
               data={actions.data}
             />
@@ -212,7 +225,6 @@ const ActionTracker = ({ setSelectedAction }) => {
               <ActionList
                 data={actions.data}
                 total={actions.total}
-                setSelectedAction={setSelectedAction}
                 loadingStatus={loadingStatus}
                 selectedFilters={selectedFilters}
                 currentQuery={currentQuery}

@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
+import {useParams} from "react-router";
+import { useHistory } from "react-router-dom";
 import config from "./Config.js";
 import { Row, Col } from 'react-bootstrap';
 import Heading from './Heading';
 import Loading from './utils/Loading';
 
-const ActionDetail = ({ selectedAction }) => {
+const ActionDetail = ({}) => {
+    const history = useHistory();
     const [actionItem, setActionItem] = useState({data: []});
     const [actionDetails, setActionDetails] = useState([]);
     const [loadingStatus, setLoadingStatus] = useState(true);
+    const {id} = useParams();
+
+    const returnTo = () => {
+      console.log(history.location);
+      return `/${history.location.search}`;
+    };
 
     const fetchActionItem = async () => {
         //get single action
-        const itemResponse = await fetch(`${config.api_host}/action-tracks/${selectedAction}`)
+        const itemResponse = await fetch(`${config.api_host}/action-tracks/${id}`)
         const itemResult = await itemResponse.json()
 
         //set the item to state so we can load the title and timeframe, which are not dependent on another call
@@ -124,7 +133,7 @@ const ActionDetail = ({ selectedAction }) => {
         return (
             actionDetails.map(item => {
                 return(
-                    <li className="mt-3">
+                    <li key={'actiondetails-' + item.title} className="mt-3">
                         <h4 className="mb-0"><b>{item.title}:</b></h4>
                         {item.data.map((values, i, array) => {
                             return (
@@ -145,10 +154,11 @@ const ActionDetail = ({ selectedAction }) => {
             </h4>
         );
     }
-
   return (
     <>
-        <Heading closeButton title="SHMCAP Action Tracker Results"/>
+        <Heading closeButton
+            returnTo={returnTo()}
+            title="SHMCAP Action Tracker Results"/>
         <Row className="mt-3 mt-sm-0">
             <Col xs={12} className="p-sm-5 text-center text-sm-left text-secondary">
                 <h1>{actionItem.title}</h1>

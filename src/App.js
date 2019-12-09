@@ -7,16 +7,15 @@ import Contact from './Contact';
 import './sass/ActionTracker.scss'
 
 const App = () => {
-  const [selectedAction, setSelectedAction] = useState(1);
 
   return (
     <Container fluid>
       <HashRouter>
         <Route exact path="/">
-            <ActionTracker setSelectedAction={setSelectedAction} />
+            <ActionTracker />
         </Route>
-        <Route path="/detail">
-          <ActionDetail selectedAction={selectedAction} />
+        <Route path="/detail/:id">
+          <ActionDetail />
         </Route>
         <Route path="/contact">
             <Contact />

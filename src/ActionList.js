@@ -23,7 +23,7 @@ const CurrentFilterList = ({currentFilters, filterCategories}) => {
         });
         let badges = [];
         currentFilters[key].forEach((id) => {
-          badges.push(<span key={key + '-' + id} className='badge badge-sm badge-primary'>{names[id]}</span>);
+          badges.push(<span key={key + '-' + id} style={{margin: "5px"}} className='badge badge-sm badge-primary'>{names[id]}</span>);
         });
 
         return <span key={key + 'badges'} ><strong>{category_name}:</strong> {badges}</span>;
@@ -50,7 +50,11 @@ const ActionList = ({ totalPages, data, setSelectedAction, page, navigatePages, 
       <ul className="list-unstyled">
         {/* list actions returned from api */}
         {loadingStatus ? <Loading /> :
-          data.map((action) => <Action key={"action-id-" + action.id} action={action} setSelectedAction={setSelectedAction} />)
+          data.map((action) => <Action key={"action-id-" + action.id}
+                action={action}
+                setSelectedAction={setSelectedAction}
+                currentFilters={currentFilters}
+                currentQuery={currentQuery}/>)
         }
       </ul>
     </>
