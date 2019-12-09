@@ -38,14 +38,17 @@ const ActionTracker = ({ setSelectedAction }) => {
       title: "Executive Office",
       filter_key: "exec_office_id",
     },
+    /*
     "/funding-sources": {
       title: "Funding Source",
       filter_key: "funding_source_ids",
     },
+    */
     "/global-actions": {
       title: "Global Action",
       filter_key: "global_action_id",
     },
+    /*
     "/lead-agencies": {
       title: "Lead Agencies",
       filter_key: "lead_agency_id",
@@ -54,6 +57,7 @@ const ActionTracker = ({ setSelectedAction }) => {
       title: "Partners",
       filter_key: "partner_ids",
     },
+    */
     "/primary-climate-interactions": {
       title: "Primary Climate Interaction",
       filter_key: "primary_climate_interaction_ids",
@@ -114,7 +118,7 @@ const ActionTracker = ({ setSelectedAction }) => {
     const paginationParams = `&page=${nextPage}&per_page=${PER_PAGE}`
 
     new Promise((ok, err) => {
-      fetch(`http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com/action-tracks/?filter=${JSON.stringify(filterParams)}${paginationParams}&query=${queryParam}&sort_by_field=id&sort_by_order=DESC`)
+      fetch(`${config.api_host}/action-tracks/?filter=${JSON.stringify(filterParams)}${paginationParams}&query=${queryParam}&sort_by_field=id&sort_by_order=DESC`)
       .then(res => res.json())
       .then(res => setActions(res))
       .then((res) => setLoadingStatus(false))
@@ -176,6 +180,7 @@ const ActionTracker = ({ setSelectedAction }) => {
   }
 
   const applyFilters = (query = '') => {
+    setPage(1);
     //this is needed to create the route params string to filter the actions based on fields
     if(Object.keys(selectedFilters).length > 0 || query !== "") {
       getRecords(selectedFilters, query);

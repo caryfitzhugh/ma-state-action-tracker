@@ -17,7 +17,7 @@ const Action = ({ action, setSelectedAction }) => {
 
   return (
     <li>
-        <Link to="/detail" onClick={updateSelectedAction} className="btn btn-link p-0"><h5 className="text-secondary font-weight-bold">{action.title}</h5></Link>
+        <Link to="/detail" onClick={updateSelectedAction} className="btn btn-link p-0"><h5 style={{textAlign: 'left', marginLeft: '20px', textIndent: '-20px'}} className="text-secondary font-weight-bold">{action.title}</h5></Link>
         <p>
             {truncatedDescription()}
             <Link to="/detail" onClick={updateSelectedAction} className="btn btn-link p-0 text-primary ml-2">Read More..</Link>

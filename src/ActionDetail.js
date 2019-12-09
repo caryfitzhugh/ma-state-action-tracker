@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from "./Config.js";
 import { Row, Col } from 'react-bootstrap';
 import Heading from './Heading';
 import Loading from './utils/Loading';
@@ -8,11 +9,9 @@ const ActionDetail = ({ selectedAction }) => {
     const [actionDetails, setActionDetails] = useState([]);
     const [loadingStatus, setLoadingStatus] = useState(true);
 
-    const apiEndpoint = "http://ma-state-action-tracker.us-east-1.elasticbeanstalk.com";
-
     const fetchActionItem = async () => {
         //get single action
-        const itemResponse = await fetch(`${apiEndpoint}/action-tracks/${selectedAction}`)
+        const itemResponse = await fetch(`${config.api_host}/action-tracks/${selectedAction}`)
         const itemResult = await itemResponse.json()
 
         //set the item to state so we can load the title and timeframe, which are not dependent on another call
@@ -25,7 +24,7 @@ const ActionDetail = ({ selectedAction }) => {
         //take ID's from the action and fetch the details of the action
         await Promise.all(filteredRouteNames.map(async key => {
             if(categoryMap[key] !== undefined) {
-                let detailsResponse = await fetch(`${apiEndpoint}/${categoryMap[key].route}/get-many/${itemResult.data[0][key]}`);
+                let detailsResponse = await fetch(`${config.api_host}/${categoryMap[key].route}/get-many/${itemResult.data[0][key]}`);
                 let detailsResult = detailsResponse.json();
                 categoryMap[key].data = detailsResult;
                 detailsResult.name = categoryMap[key].title;
@@ -44,7 +43,7 @@ const ActionDetail = ({ selectedAction }) => {
                 "Executive Office",
                 "Lead Agency",
                 "Partner(s)",
-                "Agency Priorities",
+                "Agency Priority Score",
                 "Possible Funding Sources",
                 "SHMCAP Goal(s)",
                 "Primary Climate Change Interaction(s)",
@@ -80,7 +79,7 @@ const ActionDetail = ({ selectedAction }) => {
         },
         "agency_priority_id": {
             route: "agency-priorities",
-            title: "Agency Priorities"
+            title: "Agency Priority Score"
         },
         "completion_timeframe_id": {
             route: "completion-timeframes",
