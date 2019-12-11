@@ -14,7 +14,6 @@ const ActionDetail = ({}) => {
     const {id} = useParams();
 
     const returnTo = () => {
-      console.log(history.location);
       return `/${history.location.search}`;
     };
 
@@ -33,7 +32,8 @@ const ActionDetail = ({}) => {
         //take ID's from the action and fetch the details of the action
         await Promise.all(filteredRouteNames.map(async key => {
             if(categoryMap[key] !== undefined) {
-                let detailsResponse = await fetch(`${config.api_host}/${categoryMap[key].route}/get-many/${itemResult.data[0][key]}`);
+                let url =`${config.api_host}/${categoryMap[key].route}/get-many/${itemResult.data[0][key]}`
+                let detailsResponse = await fetch(url);
                 let detailsResult = detailsResponse.json();
                 categoryMap[key].data = detailsResult;
                 detailsResult.name = categoryMap[key].title;
@@ -137,7 +137,7 @@ const ActionDetail = ({}) => {
                         <h4 className="mb-0"><b>{item.title}:</b></h4>
                         {item.data.map((values, i, array) => {
                             return (
-                                <span key={JSON.stringify(values)} >{values.status || values.name || values.action || values.type}{i + 1 !== array.length ? ',' : null} </span>
+                                <span key={JSON.stringify(values)} >{values.status || values.name || values.action || values.type || values.note}{i + 1 !== array.length ? ',' : null} </span>
                             );
                         })}
                     </li>

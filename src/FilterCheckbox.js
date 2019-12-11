@@ -18,12 +18,12 @@ const FilterCheckbox = ({ item, setFilters, selectedFilters, title, filter_key})
           className="mr-1"
           type="checkbox"
           checked={determineChecked()}
-          onChange={() => setFilters(item.computed_name, filter_key, item.id, title)}
+          onChange={() => setFilters(filter_key, item.id)}
         />
         <span
           className="mr-1"
           style={{cursor: "pointer"}}
-          onClick={() => setFilters(item.computed_name, filter_key, item.id, title)}>{item.display_name}
+          onClick={() => setFilters(filter_key, item.id)}>{item.display_name}
         </span>
         {item.description ?
           <OverlayTrigger

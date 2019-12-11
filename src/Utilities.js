@@ -2,30 +2,31 @@ import React, { useState } from 'react';
 import { Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { CSVLink } from "react-csv";
+import config from "./Config.js";
 import './sass/Utilities.scss';
 
-const Utilities = ({ applyFilters, data, currentQuery }) => {
-  const [searchValue, setSearchValue] = useState(false);
-
+const Utilities = ({ applyFilters, data, currentFilters, currentQuery, setSelectedQuery, selectedQuery}) => {
   const handleChange = (event) => {
-    setSearchValue(event.target.value);
-    if(event.target.value === "")
-    applyFilters("");
+    setSelectedQuery(event.target.value);
   }
 
   const handleSubmit = (event) => {
-    setSearchValue(event.target.value);
-    applyFilters(searchValue);
+    setSelectedQuery(event.target.value);
+    applyFilters(selectedQuery);
     event.preventDefault();
   }
-
+  const downloadLink = () => {
+    return `${config.api_host}/action-tracks/as-csv?filter=${JSON.stringify(currentFilters)}&query=${currentQuery}&sort_by_field=title&sort_by_order=ASC`;
+  }
   return (
    <Col className="utilities">
-        <CSVLink className="utility btn btn-primary mr-3" data={data}>Download CSV</CSVLink>
+        <a href={downloadLink()} target="_black"
+           rel="noopener noreferrer"
+        className="utility btn btn-primary mr-3">Download CSV</a>
         <input className="utility"
           type="text"
           placeholder="Search..."
-          value={searchValue || currentQuery}
+          value={selectedQuery}
           onKeyPress={event => {
             if (event.key === 'Enter') {
               handleSubmit(event);
@@ -34,9 +35,9 @@ const Utilities = ({ applyFilters, data, currentQuery }) => {
           onChange={(event) => handleChange(event)}></input>
         <button className="btn btn-primary py-1 ml-1" type="submit" onClick={(event) => handleSubmit(event)}>Search</button>
         <button className="btn py-1 ml-1 border"
-            disabled={!(searchValue || currentQuery).length} onClick={() => {
+            disabled={!(selectedQuery).length} onClick={() => {
             applyFilters()
-            setSearchValue("")
+            setSelectedQuery("")
           }
         }>
           Clear

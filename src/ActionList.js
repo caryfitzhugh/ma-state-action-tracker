@@ -1,10 +1,19 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import Action from './Action';
 import Loading from './utils/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { faTimesCircle, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
-const CurrentFilterList = ({currentFilters, filterCategories}) => {
+
+const CurrentFilterList = ({setFilters, currentFilters, filterCategories}) => {
+  const history = useHistory();
+  const deleteFilter = (e, key, id) => {
+    setFilters(key, id, true);
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   if (Object.keys(currentFilters).length === 0) {
     return null;
   } else {
@@ -23,7 +32,12 @@ const CurrentFilterList = ({currentFilters, filterCategories}) => {
         });
         let badges = [];
         currentFilters[key].forEach((id) => {
-          badges.push(<span key={key + '-' + id} style={{margin: "5px"}} className='badge badge-sm badge-primary'>{names[id]}</span>);
+          badges.push(<span key={key + '-' + id} style={{margin: "5px"}} className='badge badge-sm badge-primary'>{names[id]}
+              &nbsp;
+              <a href="#" onClick={(e) => deleteFilter(e, key, id)}>
+                <FontAwesomeIcon className="text-white close-sm" icon={faTimesCircle} size="1x" />
+              </a>
+            </span>);
         });
 
         return <span key={key + 'badges'} ><strong>{category_name}:</strong> {badges}</span>;
@@ -32,13 +46,14 @@ const CurrentFilterList = ({currentFilters, filterCategories}) => {
   }
 };
 
-const ActionList = ({ totalPages, data, setSelectedAction, page, navigatePages, totalRecords, loadingStatus, currentFilters, currentQuery, selectedFilters, filterCategories}) => {
+const ActionList = ({ totalPages, setFilters, data, setSelectedAction, page, navigatePages, totalRecords, loadingStatus, currentFilters, currentQuery, selectedFilters, filterCategories}) => {
   return (
     <>
       { currentQuery === "" ? null :
 
         <span key={'query-badges'} ><strong>Search:</strong> {currentQuery}</span>}
       <CurrentFilterList currentFilters={currentFilters}
+                         setFilters={setFilters}
                          filterCategories={filterCategories} />
       <h5 className="bg-secondary text-white p-2">Actions</h5>
       <div className="text-sm-right text-center mb-2 mb-sm-0">

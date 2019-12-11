@@ -15,6 +15,7 @@ const ActionTracker = ({}) => {
   const [currentFilters, setCurrentFilters] = useState({});
 
   const [selectedFilters, setSelectedFilters] = useState({});
+  const [selectedQuery, setSelectedQuery] = useState('');
 
   const [actions, setActions] = useState({data: [{}], total: 0});
   const [page, setPage] = useState(1);
@@ -168,7 +169,7 @@ const ActionTracker = ({}) => {
     }
   };
 
-  const setFilters = (text, filter_key, id, title) => {
+  const setFilters = (filter_key, id, apply_immediately) => {
     if (selectedFilters[filter_key]) {
       if (selectedFilters[filter_key].includes(id)){
         selectedFilters[filter_key] =
@@ -184,6 +185,9 @@ const ActionTracker = ({}) => {
     }
 
     setSelectedFilters(Object.assign({}, selectedFilters));
+    if (apply_immediately) {
+      applyFilters(currentQuery);
+    }
   };
 
   const clearFilters = () => {
@@ -191,11 +195,11 @@ const ActionTracker = ({}) => {
     getRecords({}, '');
   }
 
-  const applyFilters = (query = '') => {
+  const applyFilters = () => {
     setPage(1);
     //this is needed to create the route params string to filter the actions based on fields
-    if(Object.keys(selectedFilters).length > 0 || query !== "") {
-      getRecords(selectedFilters, query);
+    if(Object.keys(selectedFilters).length > 0 || selectedQuery !== "") {
+      getRecords(selectedFilters, selectedQuery);
     } else {
       getRecords({}, "");
     }
@@ -207,8 +211,10 @@ const ActionTracker = ({}) => {
         <Row className="my-4">
             <Utilities
               currentQuery={currentQuery}
+              setSelectedQuery={setSelectedQuery}
+              selectedQuery={selectedQuery}
+              currentFilters={currentFilters}
               applyFilters={applyFilters}
-              data={actions.data}
             />
         </Row>
         <Row>
@@ -229,6 +235,7 @@ const ActionTracker = ({}) => {
                 selectedFilters={selectedFilters}
                 currentQuery={currentQuery}
                 currentFilters={currentFilters}
+                setFilters={setFilters}
                 page={page}
                 totalPages={calculateTotalPages()}
                 totalRecords={actions.total}
