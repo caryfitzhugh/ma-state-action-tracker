@@ -207,7 +207,8 @@ const ActionTracker = ({}) => {
 
   return (
     <>
-        <Heading title="SHMCAP Action Tracker"/>
+        <Heading title="SHMCAP Action Tracker"
+          page={page} />
         <Row className="my-4">
             <Utilities
               currentQuery={currentQuery}
